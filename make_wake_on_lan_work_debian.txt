@@ -1,0 +1,27 @@
+Connect computer via Ethernet
+Enable Wake-on-LAN and disable Deep Sleep in BIOS
+Make sure there's no network firmware missing
+    Use 'ping [some address]' to check
+    'Network unreachable' means the computer isn't connected
+    Broke something?
+        Try editing /etc/NetworkManager/Networkmanager.conf and changing 'managed=false' to 'managed=true'
+        Then as root run 'systemctl restart NetworkManager'
+        It tells NetworkManager to take over control from a possibly misconfigured ifupdown and reset up your network
+Source: I also had no internet after logging in with G
+Install ethtool and run '/usr/sbin/ethtool [adapter name]'
+    Find adapter name with 'ip link'
+        You can also find MAC address here
+    'Supports Wake-on:' must have g in it
+        'pumbg' is ok
+Add to the global interface config file (/etc/network/interfaces):
+    auto eth0
+    iface eth0 inet dhcp
+            ethernet-wol g
+    Possibly:
+    auto eth0
+      pre-up /usr/sbin/ethtool -s eth0 wol g
+Turn off the computer, a light by the ethernet port should stay on
+Wake it!
+The computer has to have been properly shut down to wake.
+
+Use Ctrl + Alt + Shift + Page Down (KDE Plasma Desktop) to shut down with a keyboard from the desktop
